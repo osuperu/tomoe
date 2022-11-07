@@ -1,12 +1,15 @@
-import { Handler } from "express";
+import { FastifyRequest, FastifyReply } from "fastify";
 import { App } from "../app";
 import { ErrorApiBancho } from "../common/types";
 import { BpyDb } from "../util/bpy-db";
 
-const withApiKey: Handler = async (req, res, next) => {
+export default async function (
+	req: FastifyRequest,
+	reply: FastifyReply
+): Promise<unknown> {
 	const requireApiKey = await App.instance.config.requireApiKey;
-	const key = req.query.k as string;
-	
+	const key = req.query["k"] as string;
+
 	if (requireApiKey) {
 		const isValid = await BpyDb.isApiKeyValid(key);
 
@@ -14,13 +17,7 @@ const withApiKey: Handler = async (req, res, next) => {
 			const output: ErrorApiBancho = {
 				error: "Please provide a valid API key.",
 			};
-			res.status(401).json(output);
-		} else {
-			next();
+			return reply.code(401).send(output);
 		}
-	} else {
-		next();
 	}
-};
-
-export { withApiKey };
+}
