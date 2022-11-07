@@ -3,13 +3,13 @@ import moment from "moment";
 import { App } from "../../app";
 import {
 	GamemodeIntBanchoV2,
-	UserBanchoV2,
 	UserBpyDb,
 } from "../../common/types";
 import { BpyApi } from "../../util/bpy-api";
 import { BpyDb } from "../../util/bpy-db";
 import { Misc } from "../../util/misc";
 import countries from "i18n-iso-countries";
+import errors from "../../util/errors";
 
 /**
  * URL parameters:
@@ -59,7 +59,7 @@ export default async function (
 		}
 	}
 
-	if (!user) return reply.send([]); // TODO: To be implemented
+	if (!user) return reply.send({ error: errors.USER_NOT_FOUND });
 
 	const userStats = await BpyApi.getUserInfoByID(user.id);
 
