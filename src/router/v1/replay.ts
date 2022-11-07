@@ -1,5 +1,5 @@
 import { FastifyRequest, FastifyReply } from "fastify";
-import { LZMAReplayBancho, UserBpyDb } from "../../common/types";
+import { UserBpyDb } from "../../common/types";
 import { BpyApi } from "../../util/bpy-api";
 import { BpyDb } from "../../util/bpy-db";
 import { Misc } from "../../util/misc";
@@ -30,54 +30,46 @@ export default async function (
 	let mods = req.query["mods"] as string | number;
 	const type = req.query["type"];
 
-	if (beatmapID) {
-		if (scoreID) {
-			return reply.send([]); // TODO: To be implemented
-		} else {
-			if (!Misc.isNumeric(gamemode)) {
-				gamemode = 0;
-			}
+	if (!beatmapID) return reply.send([]);
 
-			if (!Misc.isNumeric(mods)) {
-				mods = 0;
-			}
-
-			let user: UserBpyDb;
-			let isUserID = false;
-			switch (type) {
-				case "u": {
-					isUserID = true;
-					break;
-				}
-				default: {
-					if (Misc.isNumeric(userToSearch)) {
-						isUserID = true;
-					}
-				}
-			}
-
-			if (isUserID) {
-				user = await BpyDb.getUserByID(Number(userToSearch));
-			} else {
-				user = await BpyDb.getUserByUsername(userToSearch);
-			}
-
-			const beatmap = await BpyDb.getBeatmapByID(Number(beatmapID));
-
-			const scores = await BpyDb.getBeatmapScores(
-				beatmap.md5,
-				Number(mods),
-				Number(gamemode),
-				user.id
-			);
-
-			const output: LZMAReplayBancho = {
-				content: await BpyApi.getLZMAReplayByID(scores[0].id),
-				encoding: "base64",
-			};
-			return reply.send(output);
-		}
+	if (scoreID) {
+		return reply.send([]); // TODO: To be implemented
 	} else {
-		return reply.send([]);
+		if (gamemode < 0 || gamemode > 3 || !Misc.isNumeric(gamemode)) gamemode = 0;
+		if (!Misc.isNumeric(mods)) mods = 0;
+
+		let user: UserBpyDb;
+		let isUserID = false;
+		switch (type) {
+			case "u": {
+				isUserID = true;
+				break;
+			}
+			default: {
+				if (Misc.isNumeric(userToSearch)) {
+					isUserID = true;
+				}
+			}
+		}
+
+		if (isUserID) {
+			user = await BpyDb.getUserByID(Number(userToSearch));
+		} else {
+			user = await BpyDb.getUserByUsername(userToSearch);
+		}
+
+		const beatmap = await BpyDb.getBeatmapByID(Number(beatmapID));
+
+		const scores = await BpyDb.getBeatmapScores(
+			beatmap.md5,
+			Number(mods),
+			Number(gamemode),
+			user.id
+		);
+
+		return reply.send({
+			content: await BpyApi.getLZMAReplayByID(scores[0].id),
+			encoding: "base64",
+		});
 	}
 }

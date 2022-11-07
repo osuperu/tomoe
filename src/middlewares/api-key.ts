@@ -1,6 +1,5 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { App } from "../app";
-import { ErrorApiBancho } from "../common/types";
 import { BpyDb } from "../util/bpy-db";
 
 export default async function (
@@ -14,10 +13,9 @@ export default async function (
 		const isValid = await BpyDb.isApiKeyValid(key);
 
 		if (!isValid) {
-			const output: ErrorApiBancho = {
+			return reply.code(401).send({
 				error: "Please provide a valid API key.",
-			};
-			return reply.code(401).send(output);
+			});
 		}
 	}
 }

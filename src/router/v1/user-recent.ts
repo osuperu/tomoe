@@ -25,13 +25,8 @@ export default async function (
 	let limit = req.query["limit"] as string | number;
 	const type = req.query["type"];
 
-	if (!Misc.isNumeric(gamemode)) {
-		gamemode = 0;
-	}
-
-	if (!limit || limit < 1 || limit > 100) {
-		limit = 10;
-	}
+	if (gamemode < 0 || gamemode > 3 || !Misc.isNumeric(gamemode)) gamemode = 0;
+	if (limit < 1 || limit > 100 || !limit) limit = 10;
 
 	let user: UserBpyDb;
 	let isUserID = false;
@@ -53,39 +48,35 @@ export default async function (
 		user = await BpyDb.getUserByUsername(userToSearch);
 	}
 
-	if (user) {
-		const scores = await BpyApi.getUserScoresByID(
-			user.id,
-			"recent",
-			Number(gamemode),
-			Number(limit)
-		);
+	if (!user) return reply.send([]);
 
-		let temp: UserRecentBancho;
-		const output: UserRecentBancho[] = [];
-		for (const score of scores.scores) {
-			temp = {
-				beatmap_id: `${score.beatmap.id}`,
-				score: `${score.score}`,
-				maxcombo: `${score.max_combo}`,
-				count50: `${score.n50}`,
-				count100: `${score.n100}`,
-				count300: `${score.n300}`,
-				countmiss: `${score.nmiss}`,
-				countkatu: `${score.nkatu}`,
-				countgeki: `${score.ngeki}`,
-				perfect: `${score.perfect}`,
-				enabled_mods: `${score.mods}`,
-				user_id: `${scores.player.id}`,
-				date: `${moment(score.play_time)
-					.utc()
-					.format("YYYY-MM-DD HH:MM:SS")}`,
-				rank: `${score.grade}`,
-			};
-			output.push(temp);
-		}
-		return reply.send(output);
-	} else {
-		return reply.send([]);
+	const scores = await BpyApi.getUserScoresByID(
+		user.id,
+		"recent",
+		Number(gamemode),
+		Number(limit)
+	);
+
+	const output: UserRecentBancho[] = [];
+	for (const score of scores.scores) {
+		output.push({
+			beatmap_id: `${score.beatmap.id}`,
+			score: `${score.score}`,
+			maxcombo: `${score.max_combo}`,
+			count50: `${score.n50}`,
+			count100: `${score.n100}`,
+			count300: `${score.n300}`,
+			countmiss: `${score.nmiss}`,
+			countkatu: `${score.nkatu}`,
+			countgeki: `${score.ngeki}`,
+			perfect: `${score.perfect}`,
+			enabled_mods: `${score.mods}`,
+			user_id: `${scores.player.id}`,
+			date: `${moment(score.play_time)
+				.utc()
+				.format("YYYY-MM-DD HH:MM:SS")}`,
+			rank: `${score.grade}`,
+		});
 	}
+	return reply.send(output);
 }

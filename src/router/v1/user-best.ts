@@ -24,13 +24,8 @@ export default async function (
 	let limit = req.query["limit"] as string | number;
 	const type = req.query["type"];
 
-	if (!Misc.isNumeric(gamemode)) {
-		gamemode = 0;
-	}
-
-	if (!limit || limit < 1 || limit > 100) {
-		limit = 10;
-	}
+	if (gamemode < 0 || gamemode > 3 || !Misc.isNumeric(gamemode)) gamemode = 0;
+	if (limit < 1 || limit > 100 || !limit) limit = 10;
 
 	let user: UserBpyDb;
 	let isUserID = false;
@@ -52,41 +47,37 @@ export default async function (
 		user = await BpyDb.getUserByUsername(userToSearch);
 	}
 
-	if (user) {
-		const topPlays = await BpyDb.getUserTopPlays(
-			user.id,
-			Number(gamemode),
-			Number(limit)
-		);
+	if (!user) return reply.send([]);
 
-		let temp: UserBestBancho;
-		const output: UserBestBancho[] = [];
-		for (const play of topPlays) {
-			temp = {
-				beatmap_id: `${play.beatmap_id}`,
-				score_id: `${play.id}`,
-				score: `${play.score}`,
-				maxcombo: `${play.max_combo}`,
-				count50: `${play.n50}`,
-				count100: `${play.n100}`,
-				count300: `${play.n300}`,
-				countmiss: `${play.nmiss}`,
-				countkatu: `${play.nkatu}`,
-				countgeki: `${play.ngeki}`,
-				perfect: `${play.perfect}`,
-				enabled_mods: `${play.mods}`,
-				user_id: `${play.userid}`,
-				date: `${moment(play.play_time)
-					.utc()
-					.format("YYYY-MM-DD HH:MM:SS")}`,
-				rank: `${play.grade}`,
-				pp: `${play.pp}`,
-				replay_available: `${play.online_checksum ? 1 : 0}`,
-			};
-			output.push(temp);
-		}
-		return reply.send(output);
-	} else {
-		return reply.send([]);
+	const topPlays = await BpyDb.getUserTopPlays(
+		user.id,
+		Number(gamemode),
+		Number(limit)
+	);
+
+	const output: UserBestBancho[] = [];
+	for (const play of topPlays) {
+		output.push({
+			beatmap_id: `${play.beatmap_id}`,
+			score_id: `${play.id}`,
+			score: `${play.score}`,
+			maxcombo: `${play.max_combo}`,
+			count50: `${play.n50}`,
+			count100: `${play.n100}`,
+			count300: `${play.n300}`,
+			countmiss: `${play.nmiss}`,
+			countkatu: `${play.nkatu}`,
+			countgeki: `${play.ngeki}`,
+			perfect: `${play.perfect}`,
+			enabled_mods: `${play.mods}`,
+			user_id: `${play.userid}`,
+			date: `${moment(play.play_time)
+				.utc()
+				.format("YYYY-MM-DD HH:MM:SS")}`,
+			rank: `${play.grade}`,
+			pp: `${play.pp}`,
+			replay_available: `${play.online_checksum ? 1 : 0}`,
+		});
 	}
+	return reply.send(output);
 }

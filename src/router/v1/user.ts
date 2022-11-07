@@ -1,6 +1,6 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import moment from "moment";
-import { UserBancho, UserBpyDb } from "../../common/types";
+import { UserBpyDb } from "../../common/types";
 import { BpyApi } from "../../util/bpy-api";
 import { BpyDb } from "../../util/bpy-db";
 import { Misc } from "../../util/misc";
@@ -25,9 +25,7 @@ export default async function (
 	const type = req.query["type"];
 	// const event_days = Number(req.query["event_days"]); TODO: To be implemented
 
-	if (!Misc.isNumeric(gamemode)) {
-		gamemode = 0;
-	}
+	if (gamemode < 0 || gamemode > 3 || !Misc.isNumeric(gamemode)) gamemode = 0;
 
 	let user: UserBpyDb;
 	let isUserID = false;
@@ -49,9 +47,12 @@ export default async function (
 		user = await BpyDb.getUserByUsername(userToSearch);
 	}
 
-	if (user) {
-		const userStats = await BpyApi.getUserInfoByID(user.id);
-		const output: UserBancho = {
+	if (!user) return reply.send([]);
+
+	const userStats = await BpyApi.getUserInfoByID(user.id);
+
+	return reply.send([
+		{
 			user_id: `${user.id}`,
 			username: `${user.name}`,
 			join_date: `${moment
@@ -77,9 +78,6 @@ export default async function (
 			total_seconds_played: `${userStats.player.stats[gamemode].playtime}`,
 			pp_country_rank: `${userStats.player.stats[gamemode].country_rank}`,
 			events: [], // TODO: To be implemented
-		};
-		return reply.send([output]);
-	} else {
-		return reply.send([]);
-	}
+		},
+	]);
 }
