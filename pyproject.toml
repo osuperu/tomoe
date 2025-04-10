@@ -1,0 +1,36 @@
+[tool.poetry]
+name = "bancho-py"
+version = "1.0.0"
+description = "A wrapper for bancho.py that emulates osu!api v1 and v2"
+authors = ["7mochi"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.13"
+python-dotenv = "^1.1.0"
+fastapi = {extras = ["all"], version = "^0.115.12"}
+structlog = "^25.2.0"
+databases = {extras = ["mysql"], version = "^0.9.0"}
+redis = "^5.2.1"
+pycountry = "^24.6.1"
+
+[tool.poetry.group.dev.dependencies]
+black = "^25.1.0"
+pre-commit = "^4.2.0"
+isort = "^6.0.1"
+autoflake = "^2.3.1"
+mypy = "^1.15.0"
+
+[tool.mypy]
+strict = true
+disallow_untyped_calls = false
+
+[tool.isort]
+add_imports = ["from __future__ import annotations"]
+force_single_line = true
+profile = "black"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
