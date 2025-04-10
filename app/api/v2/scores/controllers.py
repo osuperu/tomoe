@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from typing import Any
 from typing import Literal
 
 from common import logger
@@ -23,7 +24,7 @@ async def fetch_scores(
         default=None,
         description="Cursor string for pagination.",
     ),
-):
+) -> Any:
     """
     Returns all passed scores. Up to 1000 scores will be returned in order of oldest to latest.
     Most recent scores will be returned if cursor_string parameter is not specified.

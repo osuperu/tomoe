@@ -291,7 +291,7 @@ async def fetch_user_scores(
     if isinstance(_user, ServiceError):
         return {"error": ""}
 
-    type_params = {
+    type_params: dict[Literal["best", "recent", "firsts"], Any] = {
         "best": {
             "sort_by": "pp",
             "score_statuses": [SubmissionStatus.BEST],
@@ -313,9 +313,9 @@ async def fetch_user_scores(
         },
         # TODO: to be implemented
         "firsts": {
-            "sort_by": None,
-            "score_statuses": None,
-            "map_statuses": None,
+            "sort_by": "",
+            "score_statuses": "",
+            "map_statuses": "",
         },
     }
 
