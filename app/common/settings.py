@@ -50,3 +50,6 @@ REDIS_PASS = os.environ["REDIS_PASS"]
 REDIS_HOST = os.environ["REDIS_HOST"]
 REDIS_PORT = int(os.environ["REDIS_PORT"])
 REDIS_DB = int(os.environ["REDIS_DB"])
+
+# bancho.py urls
+BANCHOPY_MAPS_BASE_URL = os.environ["BANCHOPY_MAPS_BASE_URL"]
