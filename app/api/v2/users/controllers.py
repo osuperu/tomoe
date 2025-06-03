@@ -19,6 +19,7 @@ from common.utils import SubmissionStatus
 from errors import ServiceError
 from fastapi import APIRouter
 from fastapi import Query
+from services import clans
 from services import scores
 from services import stats
 from services import users
@@ -83,6 +84,8 @@ async def fetch_user(
 
     country = pycountry.countries.get(alpha_2=_user["country"])
     assert country is not None
+
+    clan = await clans.fetch_one(id=_user["clan_id"])
 
     return User.model_validate(
         {
@@ -221,7 +224,16 @@ async def fetch_user(
                 },
             },
             "support_level": 0,
-            "team": {"flag_url": "", "id": 1, "name": "Test", "short_name": "Test"},
+            "team": (
+                {
+                    "flag_url": "",
+                    "id": clan["id"],
+                    "name": clan["name"],
+                    "short_name": clan["tag"],
+                }
+                if not isinstance(clan, ServiceError)
+                else None
+            ),
             "user_achievements": [],
             "rank_history": {
                 "mode": mode,

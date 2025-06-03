@@ -9,3 +9,5 @@ class ServiceError(str, Enum):
     USERS_NOT_FOUND = "users.not_found"
 
     MAPS_NOT_FOUND = "maps.not_found"
+
+    CLANS_NOT_FOUND = "clans.not_found"
