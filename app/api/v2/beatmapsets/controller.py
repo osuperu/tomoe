@@ -41,19 +41,19 @@ async def fetch_beatmapset(
             "artist": _maps[0]["artist"],
             "artist_unicode": _maps[0]["artist"],
             "covers": {
-                "cover": f"https://assets.ppy.sh/beatmaps/{_maps[0]["set_id"]}/covers/cover.jpg",
-                "cover@2x": f"https://assets.ppy.sh/beatmaps/{_maps[0]["set_id"]}/covers/cover@2x.jpg",
-                "card": f"https://assets.ppy.sh/beatmaps/{_maps[0]["set_id"]}/covers/card.jpg",
-                "card@2x": f"https://assets.ppy.sh/beatmaps/{_maps[0]["set_id"]}/covers/card@2x.jpg",
-                "list": f"{settings.BANCHOPY_MAPS_BASE_URL}/thumb/{_maps[0]["set_id"]}l.jpg",
-                "list@2x": f"{settings.BANCHOPY_MAPS_BASE_URL}/thumb/{_maps[0]["set_id"]}l.jpg",
-                "slimcover": f"https://assets.ppy.sh/beatmaps/{_maps[0]["set_id"]}/covers/slimcover.jpg",
-                "slimcover@2x": f"https://assets.ppy.sh/beatmaps/{_maps[0]["set_id"]}/covers/slimcover@2x.jpg",
+                "cover": f"https://assets.ppy.sh/beatmaps/{_maps[0]['set_id']}/covers/cover.jpg",
+                "cover@2x": f"https://assets.ppy.sh/beatmaps/{_maps[0]['set_id']}/covers/cover@2x.jpg",
+                "card": f"https://assets.ppy.sh/beatmaps/{_maps[0]['set_id']}/covers/card.jpg",
+                "card@2x": f"https://assets.ppy.sh/beatmaps/{_maps[0]['set_id']}/covers/card@2x.jpg",
+                "list": f"{settings.BANCHOPY_MAPS_BASE_URL}/thumb/{_maps[0]['set_id']}l.jpg",
+                "list@2x": f"{settings.BANCHOPY_MAPS_BASE_URL}/thumb/{_maps[0]['set_id']}l.jpg",
+                "slimcover": f"https://assets.ppy.sh/beatmaps/{_maps[0]['set_id']}/covers/slimcover.jpg",
+                "slimcover@2x": f"https://assets.ppy.sh/beatmaps/{_maps[0]['set_id']}/covers/slimcover@2x.jpg",
             },
             "creator": _maps[0]["creator"],
             "favourite_count": 0,  # TODO: to be implemented, add favourites service
             "play_count": _maps[0]["plays"],
-            "preview_url": f"https://b.ppy.sh/preview/{_maps[0]["set_id"]}.mp3",
+            "preview_url": f"https://b.ppy.sh/preview/{_maps[0]['set_id']}.mp3",
             "source": "",  # TODO: maybe make an api call to get this?
             "status": repr(RankedStatus(_maps[0]["status"])),
             "title": _maps[0]["title"],
@@ -93,7 +93,7 @@ async def fetch_beatmapset(
             "beatmaps": [
                 {
                     "id": map["id"],
-                    "url": f"https://{settings.DOMAIN}/b/{map["id"]}",
+                    "url": f"https://{settings.DOMAIN}/b/{map['id']}",
                     "mode": repr(GameMode(map["mode"])),
                     "beatmapset_id": map["set_id"],
                     "difficulty_rating": map["diff"],
@@ -121,7 +121,7 @@ async def fetch_beatmapset(
             "converts": [  # TODO: this is a copypaste from beatmaps key
                 {
                     "id": map["id"],
-                    "url": f"https://{settings.DOMAIN}/b/{map["id"]}",
+                    "url": f"https://{settings.DOMAIN}/b/{map['id']}",
                     "mode": repr(GameMode(map["mode"])),
                     "beatmapset_id": map["set_id"],
                     "difficulty_rating": map["diff"],
