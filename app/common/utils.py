@@ -19,6 +19,8 @@ BPY_RANKED_STATUS_REPR_LIST = (
     "qualified",
 )
 
+BPY_INITIAL_MAP_ID = 1000000000
+
 GAMEMODE_REPR_LIST = (
     "osu",
     "taiko",

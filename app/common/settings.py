@@ -14,6 +14,9 @@ APP_PORT = os.environ["APP_PORT"]
 APP_LOG_LEVEL = os.environ["APP_LOG_LEVEL"]
 APP_DEBUG = read_bool(os.environ["APP_DEBUG"])
 
+# bancho.py folder
+BANCHOPY_FOLDER = os.environ["BANCHOPY_FOLDER"]
+
 # domain
 DOMAIN = os.environ["DOMAIN"]
 
